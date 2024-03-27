@@ -8,7 +8,8 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  List<Message> messages = [];
+  List<String> messages = [];
+
   TextEditingController _textEditingController = TextEditingController();
 
   @override
@@ -33,18 +34,18 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
-  Widget _buildMessage(Message message) {
+  Widget _buildMessage(String message) {
     return Align(
-      alignment: message.isUserMessage ? Alignment.centerRight : Alignment.centerLeft,
+      alignment: Alignment.centerLeft,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Container(
           padding: EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: message.isUserMessage ? Colors.blue : Colors.grey[300],
+            color: Colors.grey[300],
             borderRadius: BorderRadius.circular(12),
           ),
-          child: Text(message.text),
+          child: Text(message),
         ),
       ),
     );
@@ -78,7 +79,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   void _sendMessage(String message) async {
     setState(() {
-      messages.add(Message(message, true)); // Add user's message
+      messages.add(message); // Add user's message
       _textEditingController.clear(); // Clear text field
     });
 
@@ -184,17 +185,14 @@ class _ChatScreenState extends State<ChatScreen> {
         final parts = content['parts'] as List<dynamic>;
         for (var part in parts) {
           setState(() {
-            messages.add(Message(part['text'], false)); // Add API response
-          });
+            if (content['role'] == 'model') {
+              messages.add(part['text']);
+              } else {
+              messages.add(message); // Add user's message
+              }
+              });
         }
       }
     }
   }
-}
-
-class Message {
-  final String text;
-  final bool isUserMessage;
-
-  Message(this.text, this.isUserMessage);
 }
