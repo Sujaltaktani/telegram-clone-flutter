@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:telegram_clone_flutter/screens/dark_mode/home_screen_dark.dart';
 
 import '../dark_mode/drawer_dark.dart';
+import '../profile.dart';
 
 class DrawerScreen extends StatefulWidget {
   @override
@@ -17,12 +18,20 @@ class _DrawerScreenState extends State<DrawerScreen> {
       child: ListView(
         children: <Widget>[
           UserAccountsDrawerHeader(
-            accountName: Text('Creative'),
-            currentAccountPicture: CircleAvatar(
-              backgroundImage: AssetImage('assets/images/img1.jpg'),
+            accountName: Text('Sujal Taktani'),
+            currentAccountPicture: InkWell(
+              onTap: (){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Profile()),
+                );
+              },
+              child: CircleAvatar(
+                backgroundImage: AssetImage('assets/images/img1.jpg'),
+              ),
             ),
             accountEmail: Text(
-              'creative1@gmail.com',
+              '2021.sujal.taktani@ves.ac.in',
               style: TextStyle(color: Colors.white70),
             ),
             otherAccountsPictures: [

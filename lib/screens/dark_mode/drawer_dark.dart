@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../light_mode/home_screen.dart';
+import '../profile.dart';
 
 class DrawerScreenDark extends StatefulWidget {
   @override
@@ -17,12 +18,20 @@ class _DrawerScreenDarkState extends State<DrawerScreenDark> {
         children: <Widget>[
           UserAccountsDrawerHeader(
             decoration: BoxDecoration(color: Color(0xff212d3b)),
-            accountName: Text('Creative'),
-            currentAccountPicture: CircleAvatar(
-              backgroundImage: AssetImage('assets/images/img1.jpg'),
+            accountName: Text('Sujal Taktani'),
+            currentAccountPicture: InkWell(
+              onTap: (){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Profile()),
+                );
+              },
+              child: CircleAvatar(
+                backgroundImage: AssetImage('assets/images/img1.jpg'),
+              ),
             ),
             accountEmail: Text(
-              'creative1@gmail.com',
+              '2021.sujal.taktani@ves.ac.in',
               style: TextStyle(color: Colors.white70),
             ),
             otherAccountsPictures: [
