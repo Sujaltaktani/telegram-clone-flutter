@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../constants.dart';
+
 class Profile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -23,15 +25,19 @@ class Profile extends StatelessWidget {
                         height: MediaQuery.of(context).size.height,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.elliptical(
-                                MediaQuery.of(context).size.width * 0.5, 100.0),
-                            bottomRight: Radius.elliptical(
-                                MediaQuery.of(context).size.width * 0.5, 100.0),
-                          ),
-                          image: const DecorationImage(
-                            fit: BoxFit.cover,
-                            image: NetworkImage(
-                                'https://th.bing.com/th/id/R.ae87891b3dde7b28712b75d14342f1a5?rik=2ZT%2baXLkZYcxWg&riu=http%3a%2f%2fthewowstyle.com%2fwp-content%2fuploads%2f2015%2f01%2fnature-wallpaper-27.jpg&ehk=jIVFSOxLN%2fQKs4hEfZHNWAeXoeXkeEXooP%2fTy9Vwkek%3d&risl=&pid=ImgRaw&r=0'),
+                          bottomLeft: Radius.elliptical(
+                              MediaQuery.of(context).size.width * 0.5, 100.0),
+                          bottomRight: Radius.elliptical(
+                              MediaQuery.of(context).size.width * 0.5, 100.0),
+                        ),
+
+                        ),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              fit: BoxFit.cover,
+                              image: AssetImage('assets/background.jpeg'), // Replace 'your_image_name.jpg' with your actual asset image path
+                            ),
                           ),
                         ),
                       ),
@@ -42,9 +48,14 @@ class Profile extends StatelessWidget {
                         children: [
                           Padding(
                             padding: const EdgeInsets.only(left: 10, top: 10),
-                            child: Icon(
-                              Icons.close,
-                              color: Color(0xffC3C3C3),
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.pop(context);
+                              },
+                              child: Icon(
+                                Icons.close,
+                                color: MyColors.black,
+                              ),
                             ),
                           ),
                           Padding(
@@ -54,7 +65,7 @@ class Profile extends StatelessWidget {
                               child: Text(
                                 'Sujal Taktani',
                                 style: TextStyle(
-                                  color: Color(0xffBDBDBD),
+                                  color: MyColors.black,
                                   fontSize: 25,
                                 ),
                               ),
@@ -79,8 +90,7 @@ class Profile extends StatelessWidget {
                           ),
                           CircleAvatar(
                             radius: 70,
-                            backgroundImage: NetworkImage(
-                                'https://th.bing.com/th/id/OIP.yRsbgQI6NQb-Q1Gv15tpCAHaE6?rs=1&pid=ImgDetMain'),
+                            backgroundImage: AssetImage('assets/profile.jpeg'), // Replace 'your_image_name.jpg' with your actual asset image path
                           ),
                           CircleAvatar(
                             radius: 30,

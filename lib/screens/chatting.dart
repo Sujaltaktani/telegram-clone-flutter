@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class ChatScreen extends StatefulWidget {
   @override
@@ -82,112 +83,48 @@ class _ChatScreenState extends State<ChatScreen> {
       _textEditingController.clear(); // Clear text field
     });
 
-    // Make HTTP POST request to the API endpoint
-    // Replace the API response with the actual API response from your server
-    final List<dynamic> apiResponse = json.decode('''
-    [
-        {
-            "candidates": [
-                {
-                    "content": {
-                        "parts": [
-                            {
-                                "text": "I don't have access to your personal information, so I cannot tell you"
-                            }
-                        ],
-                        "role": "model"
-                    },
-                    "finishReason": "STOP",
-                    "index": 0,
-                    "safetyRatings": [
-                        {
-                            "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-                            "probability": "NEGLIGIBLE"
-                        },
-                        {
-                            "category": "HARM_CATEGORY_HATE_SPEECH",
-                            "probability": "NEGLIGIBLE"
-                        },
-                        {
-                            "category": "HARM_CATEGORY_HARASSMENT",
-                            "probability": "NEGLIGIBLE"
-                        },
-                        {
-                            "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
-                            "probability": "NEGLIGIBLE"
-                        }
-                    ]
-                }
-            ],
-            "promptFeedback": {
-                "safetyRatings": [
-                    {
-                        "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-                        "probability": "NEGLIGIBLE"
-                    },
-                    {
-                        "category": "HARM_CATEGORY_HATE_SPEECH",
-                        "probability": "NEGLIGIBLE"
-                    },
-                    {
-                        "category": "HARM_CATEGORY_HARASSMENT",
-                        "probability": "NEGLIGIBLE"
-                    },
-                    {
-                        "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
-                        "probability": "NEGLIGIBLE"
-                    }
-                ]
-            }
-        },
-        {
-            "candidates": [
-                {
-                    "content": {
-                        "parts": [
-                            {
-                                "text": " your name."
-                            }
-                        ],
-                        "role": "model"
-                    },
-                    "finishReason": "STOP",
-                    "index": 0,
-                    "safetyRatings": [
-                        {
-                            "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-                            "probability": "NEGLIGIBLE"
-                        },
-                        {
-                            "category": "HARM_CATEGORY_HATE_SPEECH",
-                            "probability": "NEGLIGIBLE"
-                        },
-                        {
-                            "category": "HARM_CATEGORY_HARASSMENT",
-                            "probability": "NEGLIGIBLE"
-                        },
-                        {
-                            "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
-                            "probability": "NEGLIGIBLE"
-                        }
-                    ]
-                }
-            ]
-        }
-    ]
-    ''');
+    // Define the API endpoint URL
+    var apiUrl = 'https://generativelanguage.googleapis.com/v1/models/gemini-pro:streamGenerateContent?key=AIzaSyBUA19PoTh7qUmJPnpDiow5n7R2lvIHCKM';
 
-    for (var item in apiResponse) {
-      final candidates = item['candidates'] as List<dynamic>;
-      for (var candidate in candidates) {
-        final content = candidate['content'];
-        final parts = content['parts'] as List<dynamic>;
-        for (var part in parts) {
-          setState(() {
-            messages.add(Message(part['text'], false)); // Add API response
-          });
+    // Define the request body
+    var requestBody = json.encode({
+      "contents": [
+        {
+          "role": "user",
+          "parts": [{"text": message}]
+        }
+      ]
+    });
+
+    // Make the HTTP POST request
+    var response = await http.post(
+      Uri.parse(apiUrl),
+      headers: {'Content-Type': 'application/json'},
+      body: requestBody,
+    );
+
+    // Check if the request was successful
+    if (response.statusCode == 200) {
+      // Parse the response JSON
+      var responseBody = json.decode(response.body);
+
+      // Extract the API response text from the JSON and add it to the messages list
+      if (responseBody is List && responseBody.isNotEmpty) {
+        var candidates = responseBody[0]['candidates'] as List;
+        if (candidates.isNotEmpty) {
+          var content = candidates[0]['content'];
+          var parts = content['parts'] as List;
+          if (parts.isNotEmpty) {
+            var apiResponseText = parts[0]['text'];
+            setState(() {
+              messages.add(Message(apiResponseText, false)); // Add API response
+            });
+          }
         }
       }
+    } else {
+      // Handle the error if the request fails
+      print('Error: ${response.statusCode}');
     }
   }
 }
